@@ -29,8 +29,8 @@ submitBtn.addEventListener("click", () => {
   const face = q2.value.trim().toLowerCase();
   const picked = document.querySelector('input[name="q3"]:checked');
 
-  const okName = name.includes("lochi");
-  const okFace = face.includes("nose");
+  const okName = name.includes("kavindu123");
+  const okFace = face.includes("ilovelochi247");
   const okRadio = !!picked;
 
   if (okName && okFace && okRadio) {

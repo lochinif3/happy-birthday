@@ -1131,3 +1131,25 @@ h2 {
   outline: 3px solid #8accd5;
   outline-offset: 2px;
 }
+
+/* Tablet */
+@media (max-width: 900px) {
+  .mem-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Phone */
+@media (max-width: 560px) {
+  .mem-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .memories-title {
+    margin-left: 0;
+  }
+  .mem-img {
+    height: 180px;
+  } /* slightly shorter photo for small screens */
+}
