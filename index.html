@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Happy Birthday Kavindu</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <!-- 1) FIRST SCREEN (no navigation here) -->
+    <section id="verify-screen" class="screen show">
+      <div class="card">
+        <h1>Real Kavindu Check 💖</h1>
+
+        <div class="question">
+          <label for="q1">Who’s your girlfriend?</label>
+          <input type="text" id="q1" placeholder="Type her name..." />
+        </div>
+
+        <div class="question">
+          <label for="q2">What does she like the most in your face?</label>
+          <input type="text" id="q2" placeholder="Your answer..." />
+        </div>
+
+        <fieldset class="question">
+          <legend>
+            Who’s baby are you? <em>(Select the correct answer)</em>
+          </legend>
+          <label
+            ><input type="radio" name="q3" value="lochi-1" /> Lochi’s</label
+          >
+          <label
+            ><input type="radio" name="q3" value="lochi-2" /> Lochi’s</label
+          >
+        </fieldset>
+
+        <div class="actions">
+          <button id="submit-btn">Submit</button>
+          <button id="retry-btn" class="ghost" hidden>Try again</button>
+        </div>
+
+        <p id="error-msg" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- 2) NAV (initially hidden; appears after verification) -->
+    <nav id="top-panel" class="top-panel hidden" aria-label="Sections">
+      <button class="nav-btn active" data-go="home">Home</button>
+      <button class="nav-btn" data-go="memories">Our memories</button>
+      <button class="nav-btn" data-go="playlist">Our Jukebox</button>
+      <button class="nav-btn" data-go="notes">Notes</button>
+      <button class="nav-btn" data-go="games">Memory Match</button>
+    </nav>
+
+    <!-- 3) APP SCREENS (all hidden until verify; Home shown after success) -->
+    <main>
+      <section id="home" class="screen">
+        <div class="home-wrap">
+          <h1 class="hero">Happy Birthday Baby!</h1>
+
+          <!-- typing line -->
+          <p id="type-line" class="type-line" aria-live="polite"></p>
+
+          <!-- remove old balloons div -->
+          <!-- <div id="balloons" class="balloons" aria-hidden="true"></div> -->
+
+          <!-- music control -->
+          <div class="music-ctrl">
+            <button id="music-toggle" class="game-btn">🔊 Pause</button>
+          </div>
+          <audio
+            id="birthday-audio"
+            src="audio/the_song.mp3"
+            preload="auto"
+            loop
+          ></audio>
+        </div>
+      </section>
+
+      <section id="memories" class="screen">
+        <div class="memories">
+          <h2 class="memories-title">Our Memories 📸</h2>
+          <div class="mem-grid" id="memGrid"></div>
+        </div>
+      </section>
+
+      <section id="playlist" class="screen">
+        <div class="playlist-wrap">
+          <h2 class="playlist-title">Our Jukebox🎧</h2>
+
+          <div class="player">
+            <img
+              id="pl-cover"
+              class="pl-cover"
+              src="img/cover-default.jpg"
+              alt="cover"
+            />
+            <div class="pl-meta">
+              <div id="pl-title" class="pl-title">Pick a song</div>
+              <div id="pl-artist" class="pl-artist">to start playing…</div>
+            </div>
+            <div class="pl-controls">
+              <button id="pl-prev" class="pl-btn" aria-label="Previous">
+                ⏮
+              </button>
+              <button id="pl-toggle" class="pl-btn big" aria-label="Play/Pause">
+                ▶️
+              </button>
+              <button id="pl-next" class="pl-btn" aria-label="Next">⏭</button>
+            </div>
+            <div class="pl-bars">
+              <span id="pl-cur">0:00</span>
+              <input id="pl-seek" type="range" min="0" value="0" step="1" />
+              <span id="pl-dur">0:00</span>
+            </div>
+            <div class="pl-volume">
+              <span>🔉</span>
+              <input
+                id="pl-vol"
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.7"
+              />
+            </div>
+          </div>
+
+          <ul id="pl-list" class="pl-list" aria-label="Song list"></ul>
+          <!-- Uses the SAME global <audio id="birthday-audio"> that already exists on Home -->
+        </div>
+      </section>
+
+      <section id="notes" class="screen">
+        <div class="notes">
+          <h2 class="notes-title">23 Notes On your 23rd 💌</h2>
+          <div class="notes-grid" id="notesGrid"></div>
+        </div>
+      </section>
+
+      <section id="games" class="screen">
+        <div class="game-wrap">
+          <h2 class="game-title">Memory Match 💞</h2>
+
+          <div class="game-bar">
+            <div>⏱️ <span id="gm-time">00:00</span></div>
+            <div>🌀 Moves: <span id="gm-moves">0</span></div>
+            <button id="gm-restart" class="game-btn">Restart</button>
+          </div>
+
+          <div id="gm-grid" class="game-grid" aria-label="memory grid"></div>
+
+          <!-- Win modal -->
+          <div id="gm-win" class="game-modal" hidden>
+            <div class="game-modal-card">
+              <h3>YAYY, YOU WON BABYYY!! 🎉</h3>
+              <p>All our memories matched, just like us 💖</p>
+              <button id="gm-play-again" class="game-btn">Play again</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
