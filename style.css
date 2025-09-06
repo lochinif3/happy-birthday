@@ -691,33 +691,60 @@ h2 {
    MEMORY GAME (SCOPED)
    ========================= */
 
+/* Optional wrapper width so the board doesn't stretch too wide on desktop */
+.game-wrap {
+  width: min(540px, 92vw);
+  margin-inline: auto;
+}
+
+/* ---------- Top bar: time • moves • Restart ---------- */
 .game-bar {
   display: flex;
-  justify-content: space-between; /* pushes left + right apart */
-  align-items: center; /* vertically centers */
-  width: min(500px, 90%); /* keeps it neat and centered */
-  margin: 0 auto 16px; /* centers on page with some bottom gap */
+  align-items: center;
+  justify-content: space-between; /* left cluster vs. right button */
+  gap: 12px;
+  width: 100%;
+  margin: 0 auto 16px;
 }
 
 .game-bar > div {
+  /* the “time & moves” cluster */
   display: flex;
-  gap: 14px; /* spacing between ⏱ and 🌀 */
   align-items: center;
+  gap: 14px;
+  font-size: clamp(15px, 3.8vw, 18px);
+  line-height: 1;
 }
 
 .game-btn {
   padding: 10px 18px;
   font-size: 1rem;
-  border: none;
+  border: 0;
   border-radius: 8px;
   background: var(--blue);
-  color: white;
+  color: #fff;
   cursor: pointer;
+  transition: background 0.2s ease, transform 0.06s ease;
 }
 .game-btn:hover {
   background: var(--blue-dark);
 }
+.game-btn:active {
+  transform: translateY(1px);
+}
 
+/* When the screen is extremely narrow, let the button wrap below */
+@media (max-width: 360px) {
+  .game-bar {
+    flex-wrap: wrap;
+  }
+  .game-btn {
+    width: 100%;
+    margin-top: 6px;
+  }
+}
+
+/* ---------- Title ---------- */
 .game-title {
   font-family: "Pacifico", cursive;
   font-size: clamp(2rem, 6vw, 3.2rem);
@@ -725,20 +752,24 @@ h2 {
   margin: 0 0 18px 8px;
 }
 
+/* ---------- Grid (always 4 columns) ---------- */
+/* side = (viewport − padding ~48px − gaps) / 4, clamped */
 .game-grid {
+  --gap: 10px;
+  --side: clamp(72px, (100vw - 48px - 3 * var(--gap)) / 4, 110px);
+
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(4, 90px); /* 4 cols × 90px */
-  grid-auto-rows: 90px; /* rows = tiles */
+  grid-template-columns: repeat(4, var(--side));
+  gap: var(--gap);
   justify-content: center;
   margin: 16px auto;
 }
 
-/* Cards (match grid cells) */
+/* ---------- Cards ---------- */
 .gm-card {
   position: relative;
-  width: 90px;
-  height: 90px;
+  width: var(--side);
+  height: var(--side);
   perspective: 700px;
   cursor: pointer;
 }
@@ -750,7 +781,7 @@ h2 {
   transform: translateY(-1px) rotateY(var(--rot, 0deg));
 }
 
-/* Inner/flipper */
+/* flipper */
 .gm-inner {
   position: absolute;
   inset: 0;
@@ -759,11 +790,11 @@ h2 {
   transition: transform 0.35s ease;
 }
 .gm-card.flipped .gm-inner {
-  --rot: 180deg; /* used by the hover rule above */
+  --rot: 180deg; /* matches hover rule above */
   transform: rotateY(180deg);
 }
 
-/* Faces */
+/* faces */
 .gm-face {
   position: absolute;
   inset: 0;
@@ -773,7 +804,7 @@ h2 {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
-/* Back (hidden side) */
+/* back (hidden side) */
 .gm-back {
   display: grid;
   place-items: center;
@@ -784,7 +815,7 @@ h2 {
   border: 3px solid #ffe2ef;
 }
 
-/* Front (photo) */
+/* front (photo) */
 .gm-front {
   transform: rotateY(180deg);
   background: #fff;
@@ -792,11 +823,11 @@ h2 {
 .gm-front img {
   width: 100%;
   height: 100%;
-  display: block;
   object-fit: cover;
+  display: block;
 }
 
-/* Matched state: glow + lock */
+/* matched state: glow + locked */
 .gm-card.matched .gm-inner {
   filter: saturate(1.05);
 }
@@ -806,6 +837,16 @@ h2 {
 }
 .gm-card.matched {
   pointer-events: none;
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  .gm-inner {
+    transition: none;
+  }
+  .gm-card:hover .gm-inner {
+    transform: none;
+  }
 }
 
 /* ---------- Responsive ---------- */
@@ -818,12 +859,6 @@ h2 {
   .gm-card {
     width: 80px;
     height: 80px;
-  }
-}
-@media (max-width: 460px) {
-  .game-grid {
-    grid-template-columns: repeat(3, 80px); /* 3 across on very small screens */
-    grid-auto-rows: 80px;
   }
 }
 
@@ -1007,19 +1042,23 @@ h2 {
   text-align: center;
 }
 
+/* Player card */
 .player {
   display: grid;
-  grid-template-columns: 100px 1fr auto;
+  /* Desktop/tablet: small fixed cover + flexible right column */
+  grid-template-columns: 100px 1fr;
   grid-template-areas:
-    "cover meta controls"
-    "cover bars  bars"
-    "cover vol   vol";
+    "cover meta"
+    "cover controls"
+    "cover bars"
+    "cover vol";
   gap: 12px 16px;
   background: #fff3f7;
   border-radius: 12px;
   padding: 14px;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
   margin-bottom: 14px;
+  overflow: hidden; /* prevents visual overflow from rounding */
 }
 .pl-cover {
   grid-area: cover;
@@ -1031,6 +1070,7 @@ h2 {
 .pl-meta {
   grid-area: meta;
   align-self: center;
+  min-width: 0; /* allow text to shrink instead of overflow */
 }
 .pl-title {
   font-weight: 800;
@@ -1040,23 +1080,26 @@ h2 {
   color: #6d5963;
   font-size: 0.95rem;
 }
+
 .pl-controls {
   grid-area: controls;
   display: flex;
   align-items: center;
   gap: 8px;
+  justify-self: end; /* sit to the right of the meta area */
+  flex-wrap: wrap; /* wrap on narrow screens */
 }
 .pl-btn {
   background: var(--blue);
   color: #fff;
-  border: none;
+  border: 0;
   border-radius: 10px;
   padding: 10px 12px;
   cursor: pointer;
   font-weight: 700;
 }
 .pl-btn.big {
-  padding: 10px 18px;
+  padding: 10px 16px;
   font-size: 1.05rem;
 }
 .pl-btn:hover {
@@ -1069,11 +1112,13 @@ h2 {
   grid-template-columns: auto 1fr auto;
   gap: 8px;
   align-items: center;
+  min-width: 0;
 }
 #pl-seek {
   width: 100%;
   accent-color: #ff90bb;
 }
+
 .pl-volume {
   grid-area: vol;
   display: flex;
@@ -1085,6 +1130,7 @@ h2 {
   accent-color: #8accd5;
 }
 
+/* Song list */
 .pl-list {
   list-style: none;
   padding: 0;
@@ -1108,21 +1154,31 @@ h2 {
   object-fit: cover;
   border-radius: 8px;
 }
+.pl-item > div {
+  min-width: 0;
+} /* text column can shrink */
 .pl-item .t {
   font-weight: 700;
   color: #613b47;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .pl-item .s {
   font-size: 0.9rem;
   color: #7b6770;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .pl-item .play {
   background: #ff90bb;
   color: #fff;
-  border: none;
+  border: 0;
   border-radius: 10px;
   padding: 8px 12px;
   cursor: pointer;
+  flex: 0 0 auto;
 }
 .pl-item .play:hover {
   background: #ff78b0;
@@ -1132,24 +1188,42 @@ h2 {
   outline-offset: 2px;
 }
 
-/* Tablet */
-@media (max-width: 900px) {
-  .mem-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+/* ---------- Mobile tweaks ---------- */
+@media (max-width: 480px) {
+  .player {
+    grid-template-columns: 84px 1fr; /* a bit smaller cover */
+    gap: 10px 12px;
+    padding: 12px;
+  }
+  .pl-cover {
+    width: 84px;
+    height: 84px;
+  }
+  .pl-controls {
+    gap: 6px;
+  }
+  .pl-btn {
+    padding: 8px 10px;
+  }
+  .pl-btn.big {
+    padding: 8px 14px;
+    font-size: 1rem;
+  }
+  #pl-vol {
+    width: 120px;
   }
 }
 
-/* Phone */
-@media (max-width: 560px) {
-  .mem-grid {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
+/* Ultra-narrow phones: put controls on their own row at full width */
+@media (max-width: 360px) {
+  .player {
+    grid-template-areas:
+      "cover meta"
+      "cover bars"
+      "cover vol"
+      "cover controls"; /* controls last → more horizontal room */
   }
-  .memories-title {
-    margin-left: 0;
+  .pl-controls {
+    justify-self: start;
   }
-  .mem-img {
-    height: 180px;
-  } /* slightly shorter photo for small screens */
 }
